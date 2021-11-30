@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BeerShop>
+  <!--1 to 10 repetitions:-->
+  <Beer>
+    <id>1</id>
+    <name>string</name>
+    <type>lager</type>
+    <alcohol>false</alcohol>
+    <manufacturer>string</manufacturer>
+    <Chars>
+      <revolutions>3</revolutions>
+      <filtered>true</filtered>
+      <nutritionValue>3</nutritionValue>
+      <containerVolume>3</containerVolume>
+      <containerMaterial>string</containerMaterial>
+      <brilliance>1.05</brilliance>
+    </Chars>
+    <!--1 to 20 repetitions:-->
+    <Ingredient>string</Ingredient>
+  </Beer>
+</BeerShop>

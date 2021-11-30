@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<BeerShop>
+<Beer>
+<id>1</id>
+<name>string</name>
+<alcohol>false</alcohol>
+<manufacturer>string</manufacturer>
+<Ingredient>string</Ingredient>
+<Chars>
+<type>lager</type>
+<revolutions>3</revolutions>
+<filtered>true</filtered>
+<nutritionValue>3</nutritionValue>
+<containerVolume>3</containerVolume>
+<containerMaterial>string</containerMaterial>
+</Chars>
+</Beer>
+</BeerShop>

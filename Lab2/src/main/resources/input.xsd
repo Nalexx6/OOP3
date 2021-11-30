@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="BeerShop">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Beer" type="Beer" maxOccurs="10">
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+
+    <xs:complexType name="Beer">
+        <xs:sequence>
+            <xs:element type="xs:string" name="id"/>
+            <xs:element type="xs:string" name="name"/>
+            <xs:element name="type">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="dark"/>
+                        <xs:enumeration value="light"/>
+                        <xs:enumeration value="lager"/>
+                        <xs:enumeration value="live"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element type="xs:boolean" name="alcohol"/>
+            <xs:element type="xs:string" name="manufacturer"/>
+            <xs:sequence>
+                <xs:element name="Chars" type="Chars"/>
+                <xs:sequence>
+                    <xs:element type="xs:string" name="Ingredient" maxOccurs="20"/>
+                </xs:sequence>
+            </xs:sequence>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:complexType name="Chars">
+        <xs:sequence>
+            <xs:element type="xs:int" name="revolutions"/>
+            <xs:element type="xs:boolean" name="filtered" />
+            <xs:element type="xs:int" name="nutritionValue" />
+            <xs:element type="xs:int" name="containerVolume"  />
+            <xs:element type="xs:string" name="containerMaterial" />
+            <xs:element type="BrillianceType" name="brilliance"/>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:simpleType name="BrillianceType">
+        <xs:restriction base="xs:double">
+            <xs:minInclusive value="0.0"/>
+            <xs:maxInclusive value="100.0"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
