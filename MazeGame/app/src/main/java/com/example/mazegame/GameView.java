@@ -23,13 +23,13 @@ public class GameView extends View {
         UP, DOWN, LEFT, RIGHT
     }
 
-    private Cell[][] cells;
-    private Cell player, exit;
+    private static Cell[][] cells;
+    private static Cell player, exit;
     private static final int COLS = 7, ROWS = 10;
     private static final float WALL_THICKNESS = 4;
     private float cellSize, hMargin, vMargin;
     private Paint wallPaint, playerPaint, exitPaint;
-    private SecureRandom random;
+    private static final SecureRandom random = new SecureRandom();;
 
     public GameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -44,12 +44,10 @@ public class GameView extends View {
         exitPaint = new Paint();
         exitPaint.setColor(Color.BLUE);
 
-        random = new SecureRandom();
-
         createMaze();
     }
 
-    private void createMaze(){
+    public static void createMaze(){
         Stack<Cell> stack = new Stack<>();
         Cell current, next;
 
@@ -69,7 +67,7 @@ public class GameView extends View {
 
 
         do {
-            next = getNeighbour(current);
+            next = getNeighbour(cells, current);
             if (next != null) {
                 removeWall(current, next);
                 stack.push(current);
@@ -82,7 +80,7 @@ public class GameView extends View {
     }
 
 
-    private Cell getNeighbour(Cell current) {
+    public static Cell getNeighbour(Cell[][] cells, Cell current) {
         List<Cell> neighbours = new ArrayList<>();
 
         //left
@@ -120,7 +118,7 @@ public class GameView extends View {
         }
     }
 
-    private void removeWall(Cell current, Cell next) {
+    public static void removeWall(Cell current, Cell next) {
         if(current.col == next.col){
             if(current.row == next.row + 1){
                 current.topWall = false;
