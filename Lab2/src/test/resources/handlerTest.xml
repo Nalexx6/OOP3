@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<BeerShop>
+    <Beer>
+        <id>1</id>
+        <name>Corona</name>
+        <type>lager</type>
+        <alcohol>true</alcohol>
+        <manufacturer>Grupo Modelo</manufacturer>
+        <Ingredient>water</Ingredient>
+        <Ingredient>barley molt</Ingredient>
+        <Ingredient>corn</Ingredient>
+        <Ingredient>hops</Ingredient>
+        <Ingredient>yeast</Ingredient>
+        <Chars>
+            <brilliance>4.5</brilliance>
+            <revolutions>100</revolutions>
+            <filtered>true</filtered>
+            <nutritionValue>100</nutritionValue>
+            <containerVolume>100</containerVolume>
+            <containerMaterial>steel</containerMaterial>
+        </Chars>
+    </Beer>
+</BeerShop>
