@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 
 
 /**
@@ -161,4 +162,16 @@ public class Chars {
         this.containerMaterial = value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chars chars = (Chars) o;
+        return Double.compare(chars.brilliance, brilliance) == 0 && filtered == chars.filtered && nutritionValue == chars.nutritionValue && containerVolume == chars.containerVolume && Objects.equals(revolutions, chars.revolutions) && Objects.equals(containerMaterial, chars.containerMaterial);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(brilliance, revolutions, filtered, nutritionValue, containerVolume, containerMaterial);
+    }
 }

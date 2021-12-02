@@ -68,7 +68,7 @@ public class XMLCreator {
                 beerElement.appendChild(chars);
                 Element brilliance = document.createElement(BeerHandler.BRILLIANCE);
                 brilliance.appendChild(document.createTextNode(String.valueOf(beer.getChars().getBrilliance())));
-                chars.appendChild(type);
+                chars.appendChild(brilliance);
                 Element revolutions = document.createElement(BeerHandler.REVOLUTIONS);
                 revolutions.appendChild(document.createTextNode(String.valueOf(beer.getChars().getRevolutions())));
                 chars.appendChild(revolutions);

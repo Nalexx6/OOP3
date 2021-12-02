@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class DOMController extends ParserXML {
     private static final Logger log = Logger.getLogger(DOMController.class.getName());
-
+    private static int ingredientsCounter = 0;
     public DOMController() {}
 
     public DOMController(XMLCreator xmlCreator) {
@@ -41,12 +41,14 @@ public class DOMController extends ParserXML {
         Element root = doc.getDocumentElement();
         NodeList beerNodes = root.getElementsByTagName(beerHandler.getName());
         for (int i = 0; i < beerNodes.getLength(); i++) {
+            ingredientsCounter = 0;
             Element beerElem = (Element) beerNodes.item(i);
             beerHandler.getBeerShop().getBeer().add(new Beer());
             beerHandler.latestBeer().setChars(new Chars());
             NodeList childNodes = beerElem.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                 if (childNodes.item(j).getNodeType() == Node.ELEMENT_NODE) {
+
                     Element child = (org.w3c.dom.Element) childNodes.item(j);
                     beerHandler.setElementValue(getChildValue(beerElem, child.getNodeName()));
                     beerHandler.setField(child.getNodeName());
@@ -69,7 +71,12 @@ public class DOMController extends ParserXML {
     }
 
     protected static String getChildValue(Element element, String name) {
-        Element child = (Element) element.getElementsByTagName(name).item(0);
+        int index = 0;
+        if (name.equals(BeerHandler.INGREDIENT)) {
+            index = ingredientsCounter;
+            ingredientsCounter++;
+        }
+        Element child = (Element) element.getElementsByTagName(name).item(index);
         if (child == null) {
             return "";
         }
