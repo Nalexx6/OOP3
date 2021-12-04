@@ -17,7 +17,7 @@ import com.jme3.scene.control.AbstractControl;
 public class BulletControl extends AbstractControl {
     private int screenWidth, screenHeight;
  
-    private float speed = 400f;
+    private float speed = 0.02f;
     public Vector3f direction;
     private float rotation;
  
@@ -37,11 +37,11 @@ public class BulletControl extends AbstractControl {
         spatial.move(direction.mult(speed*tpf));
  
 //        rotation
-        float actualRotation = Main.getAngleFromVector(direction);
-        if (actualRotation != rotation) {
-            spatial.rotate(0,0,actualRotation - rotation);
-            rotation = actualRotation;
-        }
+//        float actualRotation = Main.getAngleFromVector(direction);
+//        if (actualRotation != rotation) {
+//            spatial.rotate(0,0,actualRotation - rotation);
+//            rotation = actualRotation;
+//        }
  
 //        check boundaries
         Vector3f loc = spatial.getLocalTranslation();
@@ -49,7 +49,8 @@ public class BulletControl extends AbstractControl {
             loc.y > screenHeight ||
             loc.x < 0 ||
             loc.y < 0) {
-            spatial.removeFromParent();
+            spatial.move(-loc.x + screenWidth / 4, -loc.y + screenHeight / 4, 0);
+//            spatial.removeFromParent();
         }
     }
  

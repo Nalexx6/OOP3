@@ -6,6 +6,7 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
@@ -17,8 +18,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture2D;
 import com.jme3.ui.Picture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
  
-public class Main extends SimpleApplication implements ActionListener, AnalogListener{
+public class Main extends SimpleApplication implements ActionListener {
  
     public static void main(String[] args) {
         Main app = new Main();
@@ -26,8 +29,10 @@ public class Main extends SimpleApplication implements ActionListener, AnalogLis
     }
     private Spatial player;
     private long bulletCooldown = 5;
-    private Node bulletNode;
- 
+    private Spatial bullet;
+    private float mouseX = 0;
+    private float mouseY = 0;
+    private float fault = 30f;
     @Override
     public void simpleInitApp() {
            //        setup camera for 2D games
@@ -45,22 +50,17 @@ public class Main extends SimpleApplication implements ActionListener, AnalogLis
         player.move(settings.getWidth()/2, settings.getHeight()/2, 0);
         guiNode.attachChild(player);
         
-        bulletNode = new Node("bullets");
-        guiNode.attachChild(bulletNode);
+        bullet = getSpatial("Bullet");
+        bullet.move(settings.getWidth()/10, settings.getHeight()/10, 0);
+
+        guiNode.attachChild(bullet);
         
-        inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
-        inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
-        inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP));
-        inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_DOWN));
-        inputManager.addMapping("return", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addListener(this, "left");
-        inputManager.addListener(this, "right");
-        inputManager.addListener(this, "up");
-        inputManager.addListener(this, "down");
-        inputManager.addListener(this, "return");
-        inputManager.addMapping("mousePick", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        inputManager.addListener(this, "mousePick");
-         player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()));
+//        inputManager.addMapping("move_right", new MouseAxisTrigger(MouseInput.AXIS_X, true));
+//        inputManager.addMapping("move_left", new MouseAxisTrigger(MouseInput.AXIS_X, false));
+//        inputManager.addMapping("move_up", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+//        inputManager.addMapping("move_down", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+
+//        inputManager.addListener(this, "move_right", "move_left", "move_up", "move_down");
     }
     
     private Spatial getSpatial(String name) {
@@ -91,11 +91,30 @@ public class Main extends SimpleApplication implements ActionListener, AnalogLis
         return node;
     }
     
-    private Vector3f getAimDirection() {
+    private Vector3f getCursorDirection() {
         Vector2f mouse = inputManager.getCursorPosition();
         Vector3f playerPos = player.getLocalTranslation();
-        Vector3f dif = new Vector3f(mouse.x-playerPos.x,mouse.y-playerPos.y,0);
-        return dif.normalizeLocal();
+        if(Math.abs(mouse.x - playerPos.x) > fault || Math.abs(mouse.y - playerPos.y) > fault){
+            return new Vector3f(mouse.x-playerPos.x,mouse.y-playerPos.y,0).normalizeLocal();
+
+        } else {
+            player.getControl(PlayerControl.class).setEnabled(false);
+            player.removeControl(PlayerControl.class);
+            return new Vector3f(0, 0, 0).normalizeLocal();
+        }        
+    }
+    
+    private Vector3f getPlayerDirection() {
+        Vector3f playerPos = player.getLocalTranslation();
+        Vector3f bulletPos = bullet.getLocalTranslation();
+
+        if(Math.abs(playerPos.x - bulletPos.x) > fault || Math.abs(playerPos.y - bulletPos.y) > fault){
+            return new Vector3f(playerPos.x - bulletPos.x,playerPos.y - bulletPos.y,0).normalizeLocal();
+
+        } else {
+            System.exit(0);
+            return new Vector3f(0, 0, 0).normalizeLocal();
+        }        
     }
 
     public static float getAngleFromVector(Vector3f vec) {
@@ -109,7 +128,24 @@ public class Main extends SimpleApplication implements ActionListener, AnalogLis
  
     @Override
     public void simpleUpdate(float tpf) {
- 
+        Vector3f bulletAim = getPlayerDirection();
+        Vector3f playerAim = getCursorDirection();
+
+//        Vector2f mouse = inputManager.getCursorPosition();
+//
+//        if (Math.abs(mouse.x - mouseX) > fault || Math.abs(mouse.y - mouseY) > fault){
+//            mouseX = mouse.x;
+//            mouseY = mouse.y;
+//        } else {
+//            return;
+//        }
+        System.out.println(playerAim);
+
+        player.addControl(new PlayerControl(playerAim, settings.getWidth(), settings.getHeight()));
+        player.getControl(PlayerControl.class).setEnabled(false);
+        bullet.addControl(new BulletControl(bulletAim, settings.getWidth(), settings.getHeight()));
+        bullet.getControl(BulletControl.class).setEnabled(false);
+
     }
  
     @Override
@@ -119,46 +155,6 @@ public class Main extends SimpleApplication implements ActionListener, AnalogLis
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-        if ((Boolean) player.getUserData("alive")) {
-            if (name.equals("up")) {
-               player.getControl(PlayerControl.class).up = isPressed;
-            } else if (name.equals("down")) {
-                player.getControl(PlayerControl.class).down = isPressed;
-            } else if (name.equals("left")) {
-                player.getControl(PlayerControl.class).left = isPressed;
-            } else if (name.equals("right")) {
-                player.getControl(PlayerControl.class).right = isPressed;
-            }
-        }
     }
     
-    public void onAnalog(String name, float value, float tpf) {
-        if ((Boolean) player.getUserData("alive")) {
-            if (name.equals("mousePick")) {
-                //shoot Bullet
-                if (System.currentTimeMillis() - bulletCooldown > 83f) {
-                    bulletCooldown = System.currentTimeMillis();
- 
-                    Vector3f aim = getAimDirection();
-                    Vector3f offset = new Vector3f(aim.y/3,-aim.x/3,0);
- 
-//                    init bullet 1
-                    Spatial bullet = getSpatial("Bullet");
-                    Vector3f finalOffset = aim.add(offset).mult(30);
-                    Vector3f trans = player.getLocalTranslation().add(finalOffset);
-                    bullet.setLocalTranslation(trans);
-                    bullet.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()));
-                    bulletNode.attachChild(bullet);
- 
-//                    init bullet 2
-                    Spatial bullet2 = getSpatial("Bullet");
-                    finalOffset = aim.add(offset.negate()).mult(30);
-                    trans = player.getLocalTranslation().add(finalOffset);
-                    bullet2.setLocalTranslation(trans);
-                    bullet2.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()));
-                    bulletNode.attachChild(bullet2);
-                }
-            }
-        }
-    }
 }
