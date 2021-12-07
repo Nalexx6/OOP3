@@ -22,7 +22,7 @@ public class PlayerControl extends AbstractControl {
     public Vector3f direction;
     private float rotation;
 //    speed of the player
-    private float speed = 1e-4f;
+    private float speed = 5e-2f;
 //    lastRotation of the player
  
     public PlayerControl(Vector3f direction, int width, int height) {
@@ -37,24 +37,18 @@ public class PlayerControl extends AbstractControl {
 //        move the player in a certain direction
 //        if he is not out of the screen
         Vector3f loc = spatial.getLocalTranslation();
-        spatial.move(direction.mult(speed));
-//        rotation
-//        float actualRotation = Main.getAngleFromVector(direction);
-//
-//        if (actualRotation != rotation) {
-//            spatial.rotate(0,0, actualRotation - rotation);
-//            rotation = actualRotation;
-//        }
- 
+        spatial.move(direction.mult(speed * tpf));
+
 //        check boundaries
         if (loc.x > screenWidth || 
             loc.y > screenHeight ||
             loc.x < 0 ||
             loc.y < 0) {
-            spatial.move(-loc.x + screenWidth / 2, -loc.y + screenHeight / 2, 0);
+            spatial.move(-loc.x + 3 * screenWidth / 4, -loc.y + 3 * screenHeight / 4, 0);
             reset();
 //            spatial.removeFromParent();
         }
+        
     
     }
  

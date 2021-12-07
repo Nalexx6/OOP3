@@ -5,6 +5,7 @@
  */
 package mygame;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -17,7 +18,7 @@ import com.jme3.scene.control.AbstractControl;
 public class BulletControl extends AbstractControl {
     private int screenWidth, screenHeight;
  
-    private float speed = 0.02f;
+    private float speed = 0.2e-1f;
     public Vector3f direction;
     private float rotation;
  
@@ -34,14 +35,18 @@ public class BulletControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
 //        movement
-        spatial.move(direction.mult(speed*tpf));
+        spatial.move(direction.mult(speed * tpf));
  
 //        rotation
-//        float actualRotation = Main.getAngleFromVector(direction);
-//        if (actualRotation != rotation) {
-//            spatial.rotate(0,0,actualRotation - rotation);
-//            rotation = actualRotation;
-//        }
+        float actualRotation = Main.getAngleFromVector(direction);
+        if (actualRotation != rotation) {
+            if(actualRotation - rotation < FastMath.PI){
+                spatial.rotate(0,0,actualRotation - rotation);
+            } else {
+                spatial.rotate(0,0, FastMath.TWO_PI - (actualRotation - rotation));
+            }
+            rotation = actualRotation;
+        }
  
 //        check boundaries
         Vector3f loc = spatial.getLocalTranslation();

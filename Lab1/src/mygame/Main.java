@@ -112,15 +112,17 @@ public class Main extends SimpleApplication implements ActionListener {
             return new Vector3f(playerPos.x - bulletPos.x,playerPos.y - bulletPos.y,0).normalizeLocal();
 
         } else {
+            System.out.println("Game over");
             System.exit(0);
-            return new Vector3f(0, 0, 0).normalizeLocal();
-        }        
+        }    
+        
+        return new Vector3f(0, 0, 0).normalizeLocal();
     }
 
     public static float getAngleFromVector(Vector3f vec) {
     Vector2f vec2 = new Vector2f(vec.x,vec.y);
     return vec2.getAngle();
-}
+    }
  
     public static Vector3f getVectorFromAngle(float angle) {
         return new Vector3f(FastMath.cos(angle),FastMath.sin(angle),0);
@@ -131,20 +133,14 @@ public class Main extends SimpleApplication implements ActionListener {
         Vector3f bulletAim = getPlayerDirection();
         Vector3f playerAim = getCursorDirection();
 
-//        Vector2f mouse = inputManager.getCursorPosition();
-//
-//        if (Math.abs(mouse.x - mouseX) > fault || Math.abs(mouse.y - mouseY) > fault){
-//            mouseX = mouse.x;
-//            mouseY = mouse.y;
-//        } else {
-//            return;
-//        }
+        
         System.out.println(playerAim);
-
-        player.addControl(new PlayerControl(playerAim, settings.getWidth(), settings.getHeight()));
-        player.getControl(PlayerControl.class).setEnabled(false);
-        bullet.addControl(new BulletControl(bulletAim, settings.getWidth(), settings.getHeight()));
-        bullet.getControl(BulletControl.class).setEnabled(false);
+        PlayerControl pControl = new PlayerControl(playerAim, settings.getWidth(), settings.getHeight());
+        player.addControl(pControl);
+//        pControl.setEnabled(false);
+        BulletControl bControl = new BulletControl(bulletAim, settings.getWidth(), settings.getHeight());
+        bullet.addControl(bControl);
+//        bControl.setEnabled(false);
 
     }
  
