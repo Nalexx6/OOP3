@@ -18,7 +18,7 @@ import com.jme3.scene.control.AbstractControl;
 public class BulletControl extends AbstractControl {
     private int screenWidth, screenHeight;
  
-    private float speed = 0.2e-1f;
+    private float speed = 5e-2f;
     public Vector3f direction;
     private float rotation;
  
@@ -38,7 +38,7 @@ public class BulletControl extends AbstractControl {
         spatial.move(direction.mult(speed * tpf));
  
 //        rotation
-        float actualRotation = Main.getAngleFromVector(direction);
+        float actualRotation = Util.getAngleFromVector(direction);
         if (actualRotation != rotation) {
             if(actualRotation - rotation < FastMath.PI){
                 spatial.rotate(0,0,actualRotation - rotation);
